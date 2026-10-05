@@ -98,10 +98,17 @@ window.__ModuleLoader__.load({
 
     // ── Session snapshot normalization (defensive across list shapes) ─────
     function normalizeEntries(snapshot) {
+      // Real client API shape (verified against dsh-better-sidebar / dsh-rewind-plugin /
+      // dsh-context in the wild): sessions.list.getSnapshot() returns { byId: {...} }.
+      const byId = snapshot == null ? void 0 : snapshot.byId
       const raw = Array.isArray(snapshot) ? snapshot
         : Array.isArray(snapshot == null ? void 0 : snapshot.entries) ? snapshot.entries
         : Array.isArray(snapshot == null ? void 0 : snapshot.items) ? snapshot.items
-        : []
+        : byId && typeof byId === 'object'
+          ? Object.entries(byId)
+              .map(([id, entry]) => (entry && typeof entry === 'object' ? { id, ...entry } : void 0))
+              .filter(Boolean)
+          : []
       const out = []
       for (const entry of raw) {
         if (!entry || typeof entry !== 'object') continue
