@@ -14,7 +14,7 @@
  * observed from shipped client packages; entries are normalized defensively.
  */
 window.__ModuleLoader__.load({
-  id: '@local/dsh-attention-notifier',
+  id: '@ahian-lee/dsh-attention-notifier',
   factory(require) {
     const React = require('react')
     const h = React.createElement

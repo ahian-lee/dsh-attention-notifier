@@ -1,6 +1,6 @@
 - insert:
     - id: attention-notifier
-      name: '@local/dsh-attention-notifier'
+      name: '@ahian-lee/dsh-attention-notifier'
       config:
         notifyApproval: true
         notifyQuestion: true

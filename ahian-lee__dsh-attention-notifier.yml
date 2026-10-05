@@ -1,0 +1,9 @@
+# awesome-dsh-plugin 投稿文件：复制本文件到你的 fork 的 data/plugins/ 目录（文件名已按规范取好），
+# 一个 PR 只加这一个文件；README 是生成的，不要手改。
+# 前置：仓库已公开 + 加了 dsh-plugin topic + 仓库创建满 1 天（CI 自动查）。
+url: https://github.com/ahian-lee/dsh-attention-notifier
+name: ahian-lee/dsh-attention-notifier
+category: notify
+description:
+  en: System notifications, attention sounds and a waiting badge when a session completes or needs your approval.
+  zh: 会话完成或需要批准时，播放提示音、弹系统通知并显示等待角标。

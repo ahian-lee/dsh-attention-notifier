@@ -1,8 +1,12 @@
 {
-  "name": "@local/dsh-attention-notifier",
+  "name": "@ahian-lee/dsh-attention-notifier",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahian-lee/dsh-attention-notifier.git"
+  },
   "description": "System notification, attention sound and badge when a session finishes or awaits approval/questions.",
   "exports": {
     ".": "./index.js",
@@ -26,7 +30,8 @@
   },
   "peerDependencies": {
     "@deepseek-ai/schemastery": "^3.18.4",
-    "@deepseek-ai/cordis": "^4.0.4"
+    "@deepseek-ai/cordis": "^4.0.4",
+    "zod": "^4.6.5"
   },
   "keywords": ["dsh-plugin", "notification", "attention", "sound", "approval"]
 }

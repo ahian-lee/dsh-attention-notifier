@@ -25,6 +25,14 @@ DeepSeek Harness 插件：会话**任务完成**或**需要你批准/回答**时
 
 或发布到 GitHub 后 `dsh plugin add github:<user>/dsh-attention-notifier`（建议挂 `dsh-plugin` topic）。
 
+无 plugin_manager 时的等效手动安装（本机 desktop profile 实测足迹）：整包复制到 `<profile>/node_modules/@local/dsh-attention-notifier/`，并在 `<profile>/package.json` 的 `dsh.profile.bundles` 追加 `"@local/dsh-attention-notifier"`，重启 profile。注意手动测试副本用 `@local` 包名，发布版为 `@ahian-lee`——行为一致，正式安装请走上面两条路径之一。
+
+## 验证记录（2026-10-05，desktop profile 静态实测）
+
+- **挂载修复（已合入源码）**：cordis 插件是双 schema 语言层——`Config` 用 schemastery（`import z from '@deepseek-ai/schemastery'` 默认导出），投影的 `stateSchema`/`viewSchema` 用 zod（`import { z } from 'zod'`）。证据：v44 app.asar 核心包同时 `import z from "@deepseek-ai/schemastery"` 与 `import { z as z$1 } from "zod"`（dsh-agent/dsh-session），`turnBoundaryProjectionDefinition` 的 schema 全部 zod 构建。schemastery 没有 `.strict()/.nullable()/z.enum()/.int()`，初版 index.js 全命中并在挂载时抛 `z.object(...).strict is not a function`。发布节 §4 的 peerDependencies 记得把 `zod` 一并声明。
+- **"唯一需实测确认的点"已静态排除白名单**：控制基线帧 wire schema 为 `projections: record(string(), unknown())`，`session.projections` 文档写明 "serves any registered projection key"，客户端 `projectionValues(sessionId)` 返回 store 全部值——非白名单。`attention` 实际到达仍以第 2/3 步体感为准。
+- **事件词表复核通过**：`turn/end { turn, reason: TurnEndReason }`，`kind ∈ {completed, blocked, aborted, interrupted, error, max-tokens}`（`blocked` 由 preStep reject 真实发出）；`approval/asked { id, toolName, callId?, reason? }`；`apply(state, event)` 收 `{type, data}`。与 `fold.js` 假设一致。
+
 ## 安装后验证（3 步）
 
 1. `cordis_inspect_query` 查 `sessionProjections`，应出现 `attention` 键；
@@ -58,10 +66,16 @@ Client 调参（`client.js` 顶部 `TUNABLES`，v0.1 为常量，配置打通是
 
 **前置（评审硬条件）**：先在本机 profile 装上并完成上面「安装后验证」3 步——评审第 1 条就是"代码是否与声明一致"，且描述里的每个词都会被对着代码核。
 
-1. **改名去 `@local`**（3 处必须一致）：`package.json` 的 `name`、`cordis.patch.yml` 的 `name`、`client.js` 里 `__ModuleLoader__.load({ id })`；建议 `@<你的用户名>/dsh-attention-notifier` 或不带 scope。
-2. 发 npm 才需要：删 `"private": true`、补 `repository` 字段（市场 npm 关联靠它）；只走 GitHub 安装则 `private` 可留。
-3. 建仓库后加 **`dsh-plugin` topic**；**仓库创建满 1 天**才能投（CI 自动查）。
-4. 官方包版本已按捆绑值声明为 `peerDependencies`（schemastery ^3.18.4 / cordis ^4.0.4）。注意 node-semver 预发布坑：将来 harness 捆绑 rc 预发布版时，peer range 必须带显式 `|| >=<tuple>-rc.x` 分支，否则用户 ERESOLVE。
-5. 投稿 = 往 awesome-dsh-plugin 的 `data/plugins/` 加**一个** yml（模板见本包 `marketplace-entry.example.yml`，category 用 `notify`）；README 由脚本生成不要手改；描述含 `: ` 必须加引号。
-6. 截图（可选但推荐）：本包根放 `screenshots.json`（1–8 张相对路径），拍「toast+角标」「批准 toast」两张最佳。
-7. 可选 tarball：`npm pack` 产物附到 GitHub Release，资产名**不要带版本号**（`latest/download/` 按字面取文件名，带版本必 404 烂链）。
+包名已定稿 `@ahian-lee/dsh-attention-notifier`（`package.json` / `cordis.patch.yml` / `client.js` 模块 id 三处一致），投稿文件 `ahian-lee__dsh-attention-notifier.yml` 已按市场规范备好。建仓与推送：
+
+```powershell
+gh repo create ahian-lee/dsh-attention-notifier --public --source . --push
+gh api -X PUT repos/ahian-lee/dsh-attention-notifier/topics -f 'names[]=dsh-plugin'
+```
+
+1. 发 npm 时才需要：删 `"private": true`（`repository` 字段已补，市场 npm 关联靠它）；只走 GitHub 安装则 `private` 可留。
+2. 建仓库后加 **`dsh-plugin` topic**（上面第二条命令）；**仓库创建满 1 天**才能投（CI 自动查）。
+3. 官方包已按本机捆绑值声明 `peerDependencies`（schemastery ^3.18.4 / cordis ^4.0.4 / zod ^4.6.5——投影 schema 用 zod，见「验证记录」第一条）。注意 node-semver 预发布坑：将来 harness 捆绑 rc 预发布版时，peer range 必须带显式 `|| >=<tuple>-rc.x` 分支，否则用户 ERESOLVE。
+4. 投稿 = 往 awesome-dsh-plugin 的 `data/plugins/` 加**一个** yml（本包根的 `ahian-lee__dsh-attention-notifier.yml` 直接复制，category `notify`）；README 由脚本生成不要手改；描述含 `: ` 必须加引号。
+5. 截图（可选但推荐）：本包根放 `screenshots.json`（1–8 张相对路径），拍「toast+角标」「批准 toast」两张最佳。
+6. 可选 tarball：`npm pack` 产物附到 GitHub Release，资产名**不要带版本号**（`latest/download/` 按字面取文件名，带版本必 404 烂链）。
