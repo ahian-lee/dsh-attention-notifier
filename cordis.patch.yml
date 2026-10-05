@@ -1,0 +1,8 @@
+- insert:
+    - id: attention-notifier
+      name: '@local/dsh-attention-notifier'
+      config:
+        notifyApproval: true
+        notifyQuestion: true
+        notifyCompletion: true
+        notifyFailedTurn: true

@@ -1,0 +1,32 @@
+{
+  "name": "@local/dsh-attention-notifier",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "System notification, attention sound and badge when a session finishes or awaits approval/questions.",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": ["index.js", "client.js", "locale/*.json", "icon.svg"],
+  "icon": "./icon.svg",
+  "meta": {
+    "title": "Attention Notifier",
+    "description": "Toast + sound + badge on task completion and when approval or an answer is required. Codex-style, focus-aware, replaceable tones."
+  },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4",
+    "@deepseek-ai/cordis": "^4.0.4"
+  },
+  "keywords": ["dsh-plugin", "notification", "attention", "sound", "approval"]
+}

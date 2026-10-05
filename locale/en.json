@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "title": "Attention Notifier",
+    "description": "Toast + sound + badge on task completion and when approval or an answer is required."
+  },
+  "approval": "Needs your approval",
+  "answer": "Your answer is needed",
+  "completed": "Task completed"
+}
