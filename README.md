@@ -40,6 +40,14 @@ dsh plugin add github:ahian-lee/dsh-attention-notifier
 
 ## 设置
 
+提示音现在直接在 DSH 里换：**更多 → 设置 → 插件 → Attention Notifier**。
+
+- "等待处理时"和"任务完成时"各自独立选择提示音。
+- 内置 4 种合成音色：经典、轻柔、电玩、钟铃，点一下就切换并试听。
+- 内置猫咪 hachimi 音效（见下）。
+- "选择音乐…"可以换成你自己电脑上的任何音频文件（5MB 以内），换完立即生效，重启不丢。
+- 卡片上会显示当前两个时刻分别用的是什么声音。
+
 可以在 `cordis.patch.yml` 中分别开关批准、回答、完成和异常结束提醒：
 
 - `notifyApproval`
@@ -47,10 +55,20 @@ dsh plugin add github:ahian-lee/dsh-attention-notifier
 - `notifyCompletion`
 - `notifyFailedTurn`
 
-声音模式和音色目前需要修改 `client.js` 顶部的 `TUNABLES`，尚未提供设置页面：
+进阶选项在 `client.src.js` 顶部的 `TUNABLES`（改完跑一次 `node build/gen-builtin-sounds.mjs` 重新生成 `client.js`）：
 
 - `notifyMode`：`always`（默认，前后台出声）、`background`（仅后台出声）或 `never`（停用声音与弹窗）。任务栏补丁的角标由会话状态单独驱动。
-- `soundUrls.done` / `soundUrls.alert`：替换完成或等待处理的提示音，留空使用内置音色。
+
+## 内置猫咪 hachimi 音效（just for fun）
+
+我们加入了猫咪 hachimi 音效，just for fun：
+
+| 什么时候响 | 曲目 |
+|---|---|
+| 任务完成 | Blue Lotus · North South · Mambo |
+| 等待你批准 | Neige · Electric Neige |
+
+音频文件在 `sounds/hachimi/`，想换成自己的音乐：把 MP3 丢进这个目录跑 `node build/gen-builtin-sounds.mjs`，或者更简单——直接在设置页面里"选择音乐…"。
 
 ## 使用说明
 
