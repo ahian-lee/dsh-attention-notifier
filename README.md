@@ -1,82 +1,116 @@
-# DSH Attention Notifier
+<div align="center">
+  <img src="icon.png" width="128" alt="Attention Notifier"/>
+  <h1>Attention Notifier</h1>
+  <p><b>Plugin for DeepSeek Harness · DeepSeek Harness 插件</b></p>
+  <p><i>You hear it the moment a task finishes — or waits for you.<br/>任务完成的时刻、等你的时刻，你都会听见。</i></p>
+  <p>
+    <a href="#english">English</a> · <a href="#中文">简体中文</a>
+  </p>
+  <p>
+    <a href="https://github.com/ahian-lee/dsh-attention-notifier/releases/latest"><img src="https://img.shields.io/github/v/release/ahian-lee/dsh-attention-notifier?display_name=release&label=release" alt="release"/></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"/></a>
+    <a href="https://github.com/dsh-market/dsh-market"><img src="https://img.shields.io/badge/dsh--market-Notify-1f8f8f" alt="dsh-market"/></a>
+    <img src="https://img.shields.io/badge/platform-web%20%7C%20desktop-teal" alt="platform"/>
+  </p>
+</div>
 
-**任务完成了，或 DSH 正在等你批准、回答时，提醒你回来看看。**
+> Unofficial community plugin · 非官方社区插件
 
-让 DSH 处理任务时，你可以切到其他应用。这个插件用不同的提示音区分“任务完成”和“需要你处理”，窗口在后台时还会尝试发送系统通知。
+---
 
-Windows 桌面版可搭配[可选补丁](overlay/README.md)，增加任务栏数字角标、图标闪烁和原生系统通知。
+## English
 
-## 有哪些提醒？
+A [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin for the way you actually work: send DSH a task, switch to another app, and let the plugin tell you the two moments that matter — **a task finished**, or **DSH needs you** (approval or an answer).
 
-| 时刻 | 插件提供 | 安装 Windows 补丁后增加 |
+### ✨ Features
+
+|  | English | 中文 |
 |---|---|---|
-| 等待批准 | 较急促的三声提示音；后台系统通知 | 等待会话数量角标、任务栏闪烁 |
-| 等待回答 | 较急促的三声提示音；后台系统通知 | 等待会话数量角标、任务栏闪烁 |
-| 任务完成 | 较舒缓的两声提示音；后台系统通知 | 完成数量角标，回到窗口后清除 |
+| 🔔 | **Two moments, two sounds** — a calm double chime when a task completes, an urgent triple tone when a session waits for approval or an answer | **两种时刻，两种声音** — 完成两声舒缓，等人处理三声急促 |
+| 🎛 | **Change sounds in Settings** — More → Settings → plugins → Attention Notifier: four synth styles per event, preview button, or pick any audio file of your own (≤5MB, survives restarts) | **设置里换提示音** — 每个时刻独立选择：4 种合成音色、试听、或直接选你自己的音乐文件 |
+| 🐱 | **Built-in cat hachimi sounds** — Blue Lotus / North South / Mambo on completion, Neige / Electric Neige when it waits for you. Just for fun | **内置猫咪 hachimi 音效**，just for fun |
+| 🔢 | **Windows taskbar digit** (optional patch) — a plain white-disc digit with the number of sessions waiting, plus taskbar flashing; the digit stays until you return to the window | **任务栏数字角标**（可选补丁）+ 闪烁；回到窗口自动清除 |
+| 🧾 | **Native toasts** — background notifications via the patched app's native channel (or standard notifications without the patch); clicking one focuses the window | **原生系统通知**，点击唤起窗口 |
+| 🧩 | **Official settings slot** — the settings card lives on DSH's real plugins page; no floating widgets anywhere | **官方设置页槽位**，界面无任何悬浮元素 |
 
-默认前台和后台都会播放声音，系统通知只在窗口处于后台时发送。提醒根据会话状态变化触发，并对重复事件做去重。
-
-## 安装
-
-通过 DSH 命令行安装到所需 profile：
+### 📦 Install
 
 ```sh
 dsh plugin add github:ahian-lee/dsh-attention-notifier
 ```
 
-也可以下载仓库后，让 DSH 帮你安装：
+Restart the profile. Click once inside the DSH window so audio playback is allowed to start.
 
-> 请用 plugin_manager 的 install_bundle 从本地目录 `<仓库绝对路径>` 安装此插件，并激活到当前 profile。
+### 🎛 Sound settings
 
-安装后重启对应 profile。Windows 任务栏提醒需要另外安装[可选补丁](overlay/README.md)；只需要声音时可以跳过。
+Open **More → Settings → plugins → Attention Notifier**:
 
-## 试一下
+- "When waiting for you" and "When a task finishes" are configured independently.
+- Pick one of four synthesized styles (Classic / Soft / Retro / Bell) — clicking plays a preview.
+- Or press **Choose music…** and select any audio file on your computer (≤5MB). It is stored in the browser database and kept across restarts.
+- The card summary shows what each moment currently plays.
 
-1. 安装后，先在 DSH 窗口内点击一次，允许音频开始播放。
-2. 让 DSH 执行一个需要你批准的任务，再切到其他应用，检查提示音和系统通知。
-3. 让一轮任务正常完成，检查完成提示音。
+### 🔢 Windows overlay patch (optional)
 
-装了 Windows 补丁后，也可以检查任务栏数字和闪烁。点击原生系统通知会唤起 DSH 窗口。
+Sound and notifications work without it. The optional patch adds the taskbar digit, flashing and native toasts by extending the local desktop app (white-disc, black-digit, one simple style for every state). It is a local shadow-app patch, fully revertible, and documented in [overlay/README.md](overlay/README.md). **Revert it before updating DSH**, re-apply afterwards.
 
-## 设置
+### 🔍 How it works (for reviewers)
 
-提示音现在直接在 DSH 里换：**更多 → 设置 → 插件 → Attention Notifier**。
+The host half publishes an `attention` session projection (waiting-approval / waiting-answer / done, with turn identity). The client half subscribes to it (polling fallback), detects meaningful transitions with dedupe and a burst-aggregation window, then plays a WebAudio tone (or your chosen audio), sends a notification, and — when the desktop app carries the optional patch — drives the taskbar digit through a small `window.dshAttentionLocal` bridge added by that patch. User audio goes to IndexedDB, preferences to `localStorage`. No data leaves the machine.
 
-- "等待处理时"和"任务完成时"各自独立选择提示音。
-- 内置 4 种合成音色：经典、轻柔、电玩、钟铃，点一下就切换并试听。
-- 内置猫咪 hachimi 音效（见下）。
-- "选择音乐…"可以换成你自己电脑上的任何音频文件（5MB 以内），换完立即生效，重启不丢。
-- 卡片上会显示当前两个时刻分别用的是什么声音。
+### 🗑 Uninstall
 
-可以在 `cordis.patch.yml` 中分别开关批准、回答、完成和异常结束提醒：
+Remove the plugin from the Plugin Manager; if you installed the patch, run `overlay/restore-attention-overlay`.
 
-- `notifyApproval`
-- `notifyQuestion`
-- `notifyCompletion`
-- `notifyFailedTurn`
+---
 
-进阶选项在 `client.src.js` 顶部的 `TUNABLES`（改完跑一次 `node build/gen-builtin-sounds.mjs` 重新生成 `client.js`）：
+## 中文
 
-- `notifyMode`：`always`（默认，前后台出声）、`background`（仅后台出声）或 `never`（停用声音与弹窗）。任务栏补丁的角标由会话状态单独驱动。
+一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 插件，配合你真实的工作方式：把任务交给 DSH，切去别的应用，插件只负责告诉你两个最重要的时刻——**任务完成了**，或者**DSH 在等你**（批准或回答）。
 
-## 内置猫咪 hachimi 音效（just for fun）
+### ✨ 特色
 
-我们加入了猫咪 hachimi 音效，just for fun：
+|  | 功能 | 说明 |
+|---|---|---|
+| 🔔 | **两种时刻，两种声音** | 任务完成两声舒缓提示音；等待批准/回答三声较急促，绝不会听混 |
+| 🎛 | **设置里自由换提示音** | 更多 → 设置 → 插件 → Attention Notifier：每个时刻独立选择，4 种合成音色 + 试听，或直接选你自己电脑上的任何音频（≤5MB，重启不丢） |
+| 🐱 | **内置猫咪 hachimi 音效** | 完成 = Blue Lotus / North South / Mambo；等你处理 = Neige / Electric Neige。just for fun |
+| 🔢 | **任务栏数字角标**（可选补丁） | 白底黑字，数字=有几个会话在等你；任务栏闪烁；回到窗口自动清除 |
+| 🧾 | **原生系统通知** | 装补丁后走系统原生通知，点击唤起 DSH 窗口；不装补丁用标准通知 |
+| 🧩 | **官方设置页槽位** | 设置界面长在 DSH 真正的设置页里，界面上没有任何悬浮元素 |
 
-| 什么时候响 | 曲目 |
-|---|---|
-| 任务完成 | Blue Lotus · North South · Mambo |
-| 等待你批准 | Neige · Electric Neige |
+### 📦 安装
 
-音频文件在 `sounds/hachimi/`，想换成自己的音乐：把 MP3 丢进这个目录跑 `node build/gen-builtin-sounds.mjs`，或者更简单——直接在设置页面里"选择音乐…"。
+```sh
+dsh plugin add github:ahian-lee/dsh-attention-notifier
+```
 
-## 使用说明
+安装后重启 profile，并在 DSH 窗口内点击一次，允许音频开始播放。
 
-- 不安装补丁时，系统通知取决于运行环境和通知权限，在部分 Electron / Windows 环境下可能无法显示。
-- 音频可能需要先在窗口内点击或按键，才能在后台播放。
-- 插件优先订阅会话变化，不支持订阅时使用轮询；后台窗口的计时限制可能使提醒延迟。
-- Windows 补丁是临时方案。**更新 DSH 前请先还原补丁**，更新后再按需安装，详见[补丁说明](overlay/README.md)。
+### 🎛 提示音设置
 
-本插件在 DSH 官方插件专区的展示与反馈帖：[Discussion #9003](https://github.com/deepseek-ai/deepseek-harness/discussions/9003)。
+**更多 → 设置 → 插件 → Attention Notifier**：等待处理和任务完成各自独立选音色；"选择音乐…"可以直接用自己电脑上的音频文件当提示音。
 
-开发、排查问题和投稿信息见[开发说明](docs/development-notes.md)。
+### 🔢 Windows 补丁（可选）
+
+不装补丁也有声音和通知。补丁为本地桌面版增加任务栏数字角标、闪烁和原生通知（统一白底黑字，简单一种样式），完全可还原，详见 [overlay/README.md](overlay/README.md)。**更新 DSH 前先还原补丁**，更新后再装回。
+
+### 🔍 实现方式（供评审参考）
+
+宿主侧发布 `attention` 会话投影（等待批准 / 等待回答 / 完成，含轮次标识）；客户端订阅投影（不支持时轮询），带重复去重与突发聚合，然后播放 WebAudio 合成音或你选择的音频、发送系统通知，并在装有可选补丁时通过 `window.dshAttentionLocal` 桥驱动任务栏角标。用户音频存 IndexedDB，偏好存 localStorage，数据不出本机。
+
+### 🗑 卸载
+
+在插件管理器中移除；装过补丁的话运行 `overlay/restore-attention-overlay`。
+
+---
+
+<div align="center">
+  <i>Leave the window; the important moment comes to you.<br/>离开窗口也没关系，重要的时刻会自己找你。</i>
+</div>
+
+## License / 许可证
+
+[MIT](LICENSE)
+
+本插件在 DSH 官方插件专区的展示与反馈帖：[Discussion #9003](https://github.com/deepseek-ai/deepseek-harness/discussions/9003)。开发、排查问题和投稿信息见[开发说明](docs/development-notes.md)。
