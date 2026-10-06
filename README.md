@@ -59,6 +59,6 @@ dsh plugin add github:ahian-lee/dsh-attention-notifier
 - 插件优先订阅会话变化，不支持订阅时使用轮询；后台窗口的计时限制可能使提醒延迟。
 - Windows 补丁是临时方案。**更新 DSH 前请先还原补丁**，更新后再按需安装，详见[补丁说明](overlay/README.md)。
 
-希望 DSH 官方直接提供这类提醒，或向插件开放桌面通知能力。相关建议见 [Discussion #9003](https://github.com/deepseek-ai/deepseek-harness/discussions/9003)。
+本插件在 DSH 官方插件专区的展示与反馈帖：[Discussion #9003](https://github.com/deepseek-ai/deepseek-harness/discussions/9003)。
 
 开发、排查问题和投稿信息见[开发说明](docs/development-notes.md)。
