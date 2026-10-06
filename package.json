@@ -1,13 +1,13 @@
 {
   "name": "@ahian-lee/dsh-attention-notifier",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ahian-lee/dsh-attention-notifier.git"
   },
-  "description": "System notification, attention sound and badge when a session finishes or awaits approval/questions.",
+  "description": "Attention sounds, native toasts and (with the optional overlay patch) a Windows taskbar digit when a session finishes or awaits approval/questions.",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -18,7 +18,7 @@
   "icon": "./icon.svg",
   "meta": {
     "title": "Attention Notifier",
-    "description": "Toast + sound + badge on task completion and when approval or an answer is required. Codex-style, focus-aware, replaceable tones."
+    "description": "Sound + native toast + taskbar overlay digit when approval or an answer is required; sound + toast + persistent digit on completion until you return. Focus-aware, replaceable tones."
   },
   "dsh": {
     "bundle": { "patch": "./cordis.patch.yml" },
