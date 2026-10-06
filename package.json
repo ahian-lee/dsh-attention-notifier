@@ -1,6 +1,6 @@
 {
   "name": "@ahian-lee/dsh-attention-notifier",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "type": "module",
   "repository": {
@@ -8,14 +8,24 @@
     "url": "git+https://github.com/ahian-lee/dsh-attention-notifier.git"
   },
   "description": "Attention sounds, native toasts and (with the optional overlay patch) a Windows taskbar digit when a session finishes or awaits approval/questions.",
+  "license": "MIT",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
     "./package.json": "./package.json",
     "./locale/*.json": "./locale/*.json"
   },
-  "files": ["index.js", "fold.js", "client.js", "locale/*.json", "icon.svg"],
-  "icon": "./icon.svg",
+  "files": [
+    "index.js",
+    "fold.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "icon.png"
+  ],
+  "icon": "./icon.png",
   "meta": {
     "title": "Attention Notifier",
     "description": "Sound + native toast + taskbar overlay digit when approval or an answer is required; sound + toast + persistent digit on completion until you return. Focus-aware, replaceable tones."

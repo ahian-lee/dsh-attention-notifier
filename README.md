@@ -36,10 +36,12 @@ A [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin for
 ### 📦 Install
 
 ```sh
-dsh plugin add github:ahian-lee/dsh-attention-notifier
+dsh plugin --profile desktop add github:ahian-lee/dsh-attention-notifier
 ```
 
-Restart the profile. Click once inside the DSH window so audio playback is allowed to start.
+Fully quit DeepSeek Harness Desktop first (the desktop profile belongs to the app), run the command, then start the app again. Click once inside the DSH window so audio playback is allowed to start.
+
+Or install from inside the app: the **Plugins** page (sidebar) → **Add plugin**, and paste `github:ahian-lee/dsh-attention-notifier`.
 
 ### 🎛 Sound settings
 
@@ -82,10 +84,12 @@ Remove the plugin from the Plugin Manager; if you installed the patch, run `over
 ### 📦 安装
 
 ```sh
-dsh plugin add github:ahian-lee/dsh-attention-notifier
+dsh plugin --profile desktop add github:ahian-lee/dsh-attention-notifier
 ```
 
-安装后重启 profile，并在 DSH 窗口内点击一次，允许音频开始播放。
+先完全退出 DeepSeek Harness Desktop（desktop profile 属于应用本身），执行命令后再打开应用。然后在 DSH 窗口里点一次，允许音频播放。
+
+也可以在应用内安装：侧边栏 **插件** 页 → **添加插件**，粘贴 `github:ahian-lee/dsh-attention-notifier`。
 
 ### 🎛 提示音设置
 
