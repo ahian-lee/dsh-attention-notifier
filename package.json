@@ -1,6 +1,6 @@
 {
   "name": "@ahian-lee/dsh-attention-notifier",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "repository": {
@@ -14,7 +14,7 @@
     "./package.json": "./package.json",
     "./locale/*.json": "./locale/*.json"
   },
-  "files": ["index.js", "client.js", "locale/*.json", "icon.svg"],
+  "files": ["index.js", "fold.js", "client.js", "locale/*.json", "icon.svg"],
   "icon": "./icon.svg",
   "meta": {
     "title": "Attention Notifier",
