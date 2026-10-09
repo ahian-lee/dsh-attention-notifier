@@ -5,7 +5,9 @@
  * tiny per-session state the Client uses to decide notifications:
  *
  *   waiting-approval  an `approval/asked` without its `approval/decided` pair
- *   waiting-answer    `turn/end` with `reason.kind === 'blocked'` (agent parked on the user)
+ *   waiting-answer    an `ask_user_question` still awaiting the user's answer
+ *                     (timed or blocking schema), or `turn/end` with
+ *                     `reason.kind === 'blocked'` (agent parked on the user)
  *   running           an open turn (`turn/start` not yet closed)
  *   idle              turn closed; `lastEnd.kind` tells `completed` from other ends
  *
@@ -33,9 +35,14 @@ const approvalItem = z.object({
   toolName: z.string(),
 }).strict()
 
+const questionItem = z.object({
+  callId: z.string(),
+}).strict()
+
 const stateSchema = z.object({
   openTurn: z.boolean(),
   pendingApprovals: z.array(approvalItem),
+  openQuestions: z.array(questionItem),
   lastEnd: z.object({
     turn: z.number().int().nonnegative(),
     kind: z.string(),
@@ -60,7 +67,7 @@ export function makeAttentionProjection(config) {
     /** Pure, synchronous fold. Returns the same reference for ignored events. */
     apply: (state, event) => applyAttentionEvent(state, event),
     wire: { viewSchema, view: state => attentionView(state, config) },
-    stateVersion: 1,
+    stateVersion: 2,
   }
 }
 

@@ -26,7 +26,7 @@ A [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin for
 
 |  | English | 中文 |
 |---|---|---|
-| 🔔 | **Two moments, two sounds** — a calm double chime when a task completes, an urgent triple tone when a session waits for approval or an answer | **两种时刻，两种声音** — 完成两声舒缓，等人处理三声急促 |
+| 🔔 | **Two moments, two sounds** — a calm double chime when a task completes, an urgent triple tone when a session waits for your approval, or the agent asks you a question mid-task (`ask_user_question`, both timed and blocking forms) | **两种时刻，两种声音** — 完成两声舒缓，等人处理三声急促；agent 任务中途提问求助（批准、`ask_user_question` 提问）同样响 |
 | 🎛 | **Change sounds in Settings** — More → Settings → plugins → Attention Notifier: four synth styles per event, preview button, or pick any audio file of your own (≤5MB, survives restarts) | **设置里换提示音** — 每个时刻独立选择：4 种合成音色、试听、或直接选你自己的音乐文件 |
 | 🐱 | **Built-in cat hachimi sounds** — Blue Lotus / North South / Mambo on completion, Neige / Electric Neige when it waits for you. Just for fun | **内置猫咪 hachimi 音效**，just for fun |
 | 🔢 | **Windows taskbar digit** (optional patch) — a plain white-disc digit with the number of sessions waiting, plus taskbar flashing; the digit stays until you return to the window | **任务栏数字角标**（可选补丁）+ 闪烁；回到窗口自动清除 |
@@ -74,7 +74,7 @@ Remove the plugin from the Plugin Manager; if you installed the patch, run `over
 
 |  | 功能 | 说明 |
 |---|---|---|
-| 🔔 | **两种时刻，两种声音** | 任务完成两声舒缓提示音；等待批准/回答三声较急促，绝不会听混 |
+| 🔔 | **两种时刻，两种声音** | 任务完成两声舒缓提示音；等待批准、或 agent 中途向你提问求助（`ask_user_question`，定时/阻塞两种形态都算）三声较急促，绝不会听混 |
 | 🎛 | **设置里自由换提示音** | 更多 → 设置 → 插件 → Attention Notifier：每个时刻独立选择，4 种合成音色 + 试听，或直接选你自己电脑上的任何音频（≤5MB，重启不丢） |
 | 🐱 | **内置猫咪 hachimi 音效** | 完成 = Blue Lotus / North South / Mambo；等你处理 = Neige / Electric Neige。just for fun |
 | 🔢 | **任务栏数字角标**（可选补丁） | 白底黑字，数字=有几个会话在等你；任务栏闪烁；回到窗口自动清除 |
