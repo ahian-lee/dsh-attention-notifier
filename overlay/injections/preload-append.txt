@@ -1,0 +1,22 @@
+
+// ==== <dsh-attention-overlay patch v4> ====
+try {
+	const __dshAttnElectron = require("electron");
+	let __dshAttnBadgeCache = null;
+	__dshAttnElectron.contextBridge.exposeInMainWorld("dshAttentionLocal", {
+		setBadge: (n, kind) => { try { __dshAttnElectron.ipcRenderer.send("dsh-attention:set-badge", { count: Number(n) || 0, kind: String(kind || "alert") }) } catch {} },
+		clearBadge: () => { try { __dshAttnElectron.ipcRenderer.send("dsh-attention:clear-badge") } catch {} },
+		flash: (on) => { try { __dshAttnElectron.ipcRenderer.send("dsh-attention:flash", !!on) } catch {} },
+		notify: (title, body, tag) => { try { __dshAttnElectron.ipcRenderer.send("dsh-attention:notify", { title, body, tag }) } catch {} },
+		getBadges: async () => {
+			if (!__dshAttnBadgeCache) {
+				try { __dshAttnBadgeCache = await __dshAttnElectron.ipcRenderer.invoke("dsh-attention:get-badges") } catch { __dshAttnBadgeCache = null }
+			}
+			return __dshAttnBadgeCache;
+		},
+	});
+	console.log("[dsh-attention-overlay] preload bridge v4 exposed");
+} catch (error) {
+	try { console.error("[dsh-attention-overlay] preload bridge failed", error) } catch {}
+}
+// ==== </dsh-attention-overlay patch v4> ====

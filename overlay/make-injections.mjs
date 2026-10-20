@@ -23,15 +23,58 @@ for (const [kind, file] of KINDS) {
 const BADGES_SRC = `{${bundleMaps.join(',')}}`
 
 const MAIN = `
-// ==== <dsh-attention-overlay patch v3> ====
-// Local shadow-app patch: Windows taskbar overlay digit (3 semantic colors) +
-// frame flash + native toasts for the @ahian-lee/dsh-attention-notifier plugin
+// ==== <dsh-attention-overlay patch v4> ====
+// Local shadow-app patch: Windows taskbar overlay digit + persistent "hot"
+// blinking + native toasts for the @ahian-lee/dsh-attention-notifier plugin
 // (window.dshAttentionLocal bridge via patched preload-app.cjs).
 // Rollback: restore-attention-overlay (or patch-app-dir.mjs --revert).
 import * as __dshAttnElectron from "electron";
 const __dshAttnBadges = ${BADGES_SRC};
 const __dshAttnImageCache = new Map();
 const __dshAttnOverlayState = new Map();
+// Persistent blink ("hot" taskbar state) while attention is owed.
+const __dshAttnBlink = new Map();   // win.id -> { timer, on, image, tooltip }
+const BLINK_MS = 700;
+const FLASH_REARM_MS = 3000;        // Windows may stop the native flash on its own: re-arm it periodically
+function __dshAttnStopBlink(winId) {
+	const b = __dshAttnBlink.get(winId);
+	if (!b) return;
+	try { clearInterval(b.timer) } catch {}
+	// restore the solid overlay so the digit is never left half-painted
+	try {
+		const win = __dshAttnElectron.BrowserWindow.fromId(winId);
+		if (win && !win.isDestroyed()) win.setOverlayIcon(b.image, b.tooltip);
+	} catch {}
+	__dshAttnBlink.delete(winId);
+}
+function __dshAttnStartBlink(win) {
+	if (!win || win.isDestroyed()) return;
+	const state = __dshAttnOverlayState.get(win.id);
+	if (!state || state.endsWith(":")) return;      // nothing to show
+	const [kind, label] = state.split(":");
+	const n = label === "9+" ? 10 : Number(label) || 0;
+	const image = __dshAttnImage(kind, n);
+	if (!image) return;
+	const tooltip = (label === "9+" ? "9+" : String(n)) + " sessions need attention";
+	if (__dshAttnBlink.has(win.id)) return;         // already blinking
+	let on = true;
+	let lastFlash = 0;
+	const timer = setInterval(() => {
+		try {
+			const w = __dshAttnElectron.BrowserWindow.fromId(win.id);
+			if (!w || w.isDestroyed()) { __dshAttnStopBlink(win.id); return }
+			on = !on;
+			w.setOverlayIcon(on ? image : null, on ? tooltip : "");
+			// Keep the native taskbar highlight alive too (Windows may drop it).
+			const now = Date.now();
+			if (now - lastFlash > FLASH_REARM_MS && (w.isMinimized() || !w.isFocused())) {
+				lastFlash = now;
+				try { w.flashFrame(true) } catch {}
+			}
+		} catch { __dshAttnStopBlink(win.id) }
+	}, BLINK_MS);
+	__dshAttnBlink.set(win.id, { timer, on, image, tooltip });
+}
 function __dshAttnImage(kind, n) {
 	const label = n > 9 ? "9+" : String(Math.max(1, Math.floor(n) || 1));
 	const k = __dshAttnBadges[kind] ? kind : "alert";
@@ -71,10 +114,23 @@ __dshAttnElectron.ipcMain.on("dsh-attention:set-badge", (event, payload) => {
 		const kind = p.kind === "answer" || p.kind === "done" ? p.kind : "alert";
 		const label = n === 0 ? "" : n > 9 ? "9+" : String(n);
 		const state = kind + ":" + label;
-		if (__dshAttnOverlayState.get(win.id) === state) return;
+		const changed = __dshAttnOverlayState.get(win.id) !== state;
 		__dshAttnOverlayState.set(win.id, state);
-		if (label === "") win.setOverlayIcon(null, "");
-		else {
+		if (label === "") {
+			__dshAttnStopBlink(win.id);
+			win.setOverlayIcon(null, "");
+			return;
+		}
+		// "hot" kinds blink; completion (done) stays solid (user preference).
+		// The client re-asserts the badge every poll, so this is a self-healing
+		// keep-alive: if the blink died for any reason, it restarts here.
+		const hot = kind === "alert" || kind === "answer";
+		if (!hot) __dshAttnStopBlink(win.id);
+		if (hot) {
+			__dshAttnStartBlink(win);
+			// Native highlight: arm immediately when the window is not in front.
+			if (win.isMinimized() || !win.isFocused()) { try { win.flashFrame(true) } catch {} }
+		} else {
 			const image = __dshAttnImage(kind, n);
 			if (image) win.setOverlayIcon(image, n + " sessions need attention");
 		}
@@ -87,15 +143,24 @@ __dshAttnElectron.ipcMain.on("dsh-attention:clear-badge", (event) => {
 	try {
 		const win = __dshAttnWindow(event);
 		if (!win) return;
+		__dshAttnStopBlink(win.id);
 		__dshAttnOverlayState.delete(win.id);
 		win.setOverlayIcon(null, "");
+		try { win.flashFrame(false) } catch {}
 	} catch {}
 });
 __dshAttnElectron.ipcMain.on("dsh-attention:flash", (event, on) => {
 	try {
-		if (!on) return;
 		const win = __dshAttnWindow(event);
-		if (win && (win.isMinimized() || !win.isFocused())) win.flashFrame(true);
+		if (!win) return;
+		if (on) {
+			// Native taskbar flash (Windows "hot" highlight) + the overlay blink.
+			if (win.isMinimized() || !win.isFocused()) win.flashFrame(true);
+			__dshAttnStartBlink(win);
+		} else {
+			try { win.flashFrame(false) } catch {}
+			__dshAttnStopBlink(win.id);
+		}
 	} catch {}
 });
 __dshAttnElectron.ipcMain.on("dsh-attention:notify", (event, payload) => {
@@ -122,18 +187,21 @@ __dshAttnElectron.ipcMain.on("dsh-attention:notify", (event, payload) => {
 	}
 });
 __dshAttnElectron.app.on("browser-window-focus", () => {
-	// The user is back: the taskbar digit has done its job.
+	// The user is back: stop blinking and drop the taskbar digit.
+	for (const win of __dshAttnElectron.BrowserWindow.getAllWindows()) {
+		try { if (!win.isDestroyed()) win.flashFrame(false) } catch {}
+	}
 	__dshAttnClearAll();
 });
 try {
 	__dshAttnElectron.app.setAppUserModelId("com.deepseek.dsh");
 } catch {}
-console.log("[dsh-attention-overlay] patch v3 active");
-// ==== </dsh-attention-overlay patch v3> ====
+console.log("[dsh-attention-overlay] patch v4 active (blink enabled)");
+// ==== </dsh-attention-overlay patch v4> ====
 `
 
 const PRELOAD = `
-// ==== <dsh-attention-overlay patch v3> ====
+// ==== <dsh-attention-overlay patch v4> ====
 try {
 	const __dshAttnElectron = require("electron");
 	let __dshAttnBadgeCache = null;
@@ -149,11 +217,11 @@ try {
 			return __dshAttnBadgeCache;
 		},
 	});
-	console.log("[dsh-attention-overlay] preload bridge v3 exposed");
+	console.log("[dsh-attention-overlay] preload bridge v4 exposed");
 } catch (error) {
 	try { console.error("[dsh-attention-overlay] preload bridge failed", error) } catch {}
 }
-// ==== </dsh-attention-overlay patch v3> ====
+// ==== </dsh-attention-overlay patch v4> ====
 `
 
 mkdirSync(join(here, 'injections'), { recursive: true })
